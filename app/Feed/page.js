@@ -17,7 +17,8 @@ export default function Feed() {
 
   useEffect(() => {
     const messagesRef = collection(db, "touits");
-    const q = query(messagesRef, orderBy("createdAt"), limit(10)); // Récupérez les 10 derniers messages triés par date
+    const q = query(messagesRef, orderBy("createdAt", "desc"), limit(10)); // Récupérez les 10 derniers messages triés par date
+    //TODO AFFICHE LES 10 DERNIERS MESSAGES PAS LES 10 PREMIERS
 
     const unsubscribe = onSnapshot(q, (querySnapshot) => { //écouter les modifications dans la collection "users" et mettre à jour le state "messages" en temps réel.
       const messagesData = [];
@@ -38,6 +39,7 @@ export default function Feed() {
         text: formValue,
         createdAt: serverTimestamp(),
         userId: user.uid,
+        displayName: user.displayName,
         photo: user.photoURL,
       });
       console.log("Document written with ID: ", docRef.id);
@@ -60,24 +62,31 @@ export default function Feed() {
         >
           Log out
         </button>
-      </div>
         <form>
           <input
             value={formValue}
             onChange={(e) => setFormValue(e.target.value)}
             placeholder="Texte du touite ici"
           />
-          <button type="button" disabled={!formValue} onClick={sendMessage}>
-            🐦
-          </button>
+          <button type="button"  onClick={sendMessage}>🐦</button>
         </form>
       <section>
         <ul>
           {messages.map((message) => (
-            <li key={message.id}>{message.text}</li>
+            <li key={message.id}>
+              <img
+                src={message.photo} 
+                alt={message.displayName}
+                style={{ width: '40px', height: '40px', borderRadius: '50%' }}
+              />
+              {message.displayName}
+              <br/>
+              {message.text}
+            </li>
           ))}
         </ul>
       </section>
+      </div>
       <section>
         <>site de qualité</>
       </section>
