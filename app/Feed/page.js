@@ -126,6 +126,12 @@ export default function Feed() {
             <input
               value={formValue}
               onChange={(e) => setFormValue(e.target.value)}
+              onKeyPress={(e) => {
+                if (e.key === 'Enter') {
+                  e.preventDefault();
+                  sendMessage();
+                }
+              }}
               placeholder="Texte du touite ici"
             />
             <button type="button" onClick={sendMessage}>
@@ -149,7 +155,7 @@ export default function Feed() {
                     />
                   {message.displayName}
                     {message.userId === user.uid && (
-                      <span onClick={() => handleSuppr(message.id)}>❌</span>
+                      <button onClick={() => handleSuppr(message.id)}>❌</button>
                     )}
                 </div>
                 <br />
