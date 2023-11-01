@@ -16,5 +16,4 @@ export default function Home() {
       { (user ? <Feed /> : <Login />)}
     </FirebaseContext.Provider>
     )
-    
 }

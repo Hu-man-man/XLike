@@ -1,3 +1,5 @@
+"use client";
+
 import { useContext, useState, useEffect } from "react";
 import FirebaseContext from "../hooks/context";
 import {
@@ -110,10 +112,12 @@ export default function Feed() {
   };
 
   return (
-    <main>
-      <div className="h-screen" style={{ display: "flex" }}>
-        <div>
-          <h1>FEEEEEEEEEEEEEEED</h1>
+    <main className="flex flex-col h-screen">
+      <header className="text-center p-5 h-30">
+        <h1>FEED</h1>
+      </header>
+      <div className="flex-grow flex flex-row">
+        <aside className="w-50 p-5">
           <img src={user.photoURL} alt={user.displayName} />
           <h2>{user.displayName}</h2>
           <button
@@ -122,57 +126,80 @@ export default function Feed() {
           >
             Log out
           </button>
-          <form>
-            <input
-              value={formValue}
-              onChange={(e) => setFormValue(e.target.value)}
-              onKeyPress={(e) => {
-                if (e.key === 'Enter') {
-                  e.preventDefault();
-                  sendMessage();
-                }
-              }}
-              placeholder="Texte du touite ici"
-            />
-            <button type="button" onClick={sendMessage}>
-              🐦
-            </button>
-          </form>
-        </div>
-        <section style={{ maxHeight: "100vh", overflowY: "auto" }}>
-          <ul>
-            {messages.map((message) => (
-              <li key={message.id} style={{ border: "1px solid black" }}>
-                <div style={{ display: "flex", alignItems: "center" }}>
-                  <img
-                    src={message.photo}
-                    alt={message.displayName}
-                    style={{
-                      width: "40px",
-                      height: "40px",
-                      borderRadius: "50%",
-                    }}
-                    />
-                  {message.displayName}
+        </aside>
+        <section>
+          <div id="touiteur" className="p-7">
+            <form>
+              <textarea
+                id="nom_unique"
+                name="nom_unique"
+                value={formValue}
+                onChange={(e) => {
+                  if (e.target.value.length < 280) {
+                    setFormValue(e.target.value);
+                  }
+                }}
+                onKeyPress={(e) => {
+                  if (e.key === "Enter") {
+                    e.preventDefault();
+                    sendMessage();
+                  }
+                }}
+                placeholder="Texte du touite ici (Maximum 280 caractères)"
+                className="w-[400px] resize-y"
+              />
+              <button
+                type="button"
+                onClick={sendMessage}
+                className="m-1 text-2xl"
+              >
+                🐦
+              </button>
+            </form>
+          </div>
+          <div>
+            <ul className="overflow-y-auto max-h-[calc(100vh-209px)] w-[500px]">
+              {messages.map((message) => (
+                <li
+                  key={message.id}
+                  className="m-1 p-1 rounded"
+                  style={{ border: "1px solid black" }}
+                >
+                  <div className="flex justify-between">
+                    <div className="flex">
+                      <img
+                        src={message.photo}
+                        alt={message.displayName}
+                        style={{
+                          width: "40px",
+                          height: "40px",
+                          borderRadius: "50%",
+                        }}
+                      />
+                      {message.displayName}
+                    </div>
                     {message.userId === user.uid && (
-                      <button onClick={() => handleSuppr(message.id)}>❌</button>
+                      <button onClick={() => handleSuppr(message.id)}>
+                        ❌
+                      </button>
                     )}
-                </div>
-                <br />
-                {message.text}
-                <br />
-                <button onClick={() => handleLike(message.id)} >
-                  {message.likes.includes(user.uid) ? "❤️" : "🤍"}
-                </button>
-                {message.likes.length !== 0 && message.likes.length}
-              </li>
-            ))}
-          </ul>
+                  </div>
+                  <br />
+                  <div className="max-w-full break-words">{message.text}</div>
+                  <br />
+                  <button onClick={() => handleLike(message.id)}>
+                    {message.likes.includes(user.uid) ? "❤️" : "🤍"}
+                  </button>
+                  {message.likes.length !== 0 && message.likes.length}
+                </li>
+              ))}
+            </ul>
+          </div>
         </section>
       </div>
-      <section>
+      <footer className="bg-gray-800 text-white p-5 h-30 w-full">
         <>site de qualité</>
-      </section>
+      </footer>
     </main>
   );
 }
