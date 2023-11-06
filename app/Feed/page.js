@@ -8,6 +8,7 @@ import {
   onSnapshot,
   query,
   orderBy,
+  where,
   limit,
   serverTimestamp,
   doc,
@@ -25,25 +26,42 @@ export default function Feed() {
 
   const [formValue, setFormValue] = useState("");
   const [messages, setMessages] = useState([]);
+  const [activeTab, setActiveTab] = useState("feed");
 
   useEffect(() => {
     const messagesRef = collection(db, "touits");
-    const q = query(messagesRef, orderBy("createdAt", "desc"), limit(10)); // Récupérez les 10 derniers messages triés par date
+    let messageQuery
+    if (activeTab === "mesTouites") {
+      messageQuery = query(
+      messagesRef,
+      where("userId", "==", user.uid),
+      orderBy("createdAt", "desc"),
+      limit(10)
+    )} else {
+      messageQuery = query(
+      messagesRef,
+      orderBy("createdAt", "desc"),
+      limit(10)
+    )}
 
-    const unsubscribe = onSnapshot(q, (querySnapshot) => {
+    console.log("what i need" + user.uid);
+
+    const unsubscribe = onSnapshot(messageQuery, (querySnapshot) => {
       //écouter les modifications dans la collection "users" et mettre à jour le state "messages" en temps réel.
       const messagesData = [];
       querySnapshot.forEach((doc) => {
         // Parcours de chaque document dans le querySnapshot
         messagesData.push({ id: doc.id, ...doc.data() }); // Pour chaque document, crée un objet contenant l'ID et les données du document
       });
+      console.log("userId in the message:", messagesData[0].userId);
+      console.log("Messages Data:", messagesData);
       setMessages(messagesData);
     });
 
     return () => {
       unsubscribe();
     };
-  }, []);
+  }, [activeTab]);
 
   const sendMessage = async () => {
     try {
@@ -112,19 +130,30 @@ export default function Feed() {
   };
 
   return (
-    <main className="flex flex-col h-screen">
+    <main className="flex flex-col h-screen items-center">
       <header className="text-center p-5 h-30">
-        <h1>FEED</h1>
+        <h1>{activeTab}</h1>
       </header>
       <div className="flex-grow flex flex-row">
-        <aside className="w-50 p-5">
+        <aside className="w-50 p-5 text-center">
           <img src={user.photoURL} alt={user.displayName} />
-          <h2>{user.displayName}</h2>
+          <h2 className="max-w-[110px] break-words">{user.displayName}</h2>
           <button
             onClick={auth.logout}
             className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
           >
             Log out
+          </button>
+          <br />
+          <br />
+          <br />
+          <br />
+          <br />
+          <button onClick={() => setActiveTab("feed")} className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded">Feed</button>
+          <br />
+          <br />
+          <button onClick={() => setActiveTab("mesTouites")} className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded">
+            Mes touites
           </button>
         </aside>
         <section>
@@ -158,7 +187,7 @@ export default function Feed() {
             </form>
           </div>
           <div>
-            <ul className="overflow-y-auto max-h-[calc(100vh-209px)] w-[500px]">
+            <ul className="overflow-y-auto max-h-[calc(100vh-223px)] w-[500px]">
               {messages.map((message) => (
                 <li
                   key={message.id}
@@ -177,6 +206,8 @@ export default function Feed() {
                         }}
                       />
                       {message.displayName}
+                      {" - "}
+                      {message.createdAt.toDate().toString().substring(0, 15)}
                     </div>
                     {message.userId === user.uid && (
                       <button onClick={() => handleSuppr(message.id)}>
@@ -184,10 +215,13 @@ export default function Feed() {
                       </button>
                     )}
                   </div>
-                  <br />
+
                   <div className="max-w-full break-words">{message.text}</div>
-                  <br />
-                  <button onClick={() => handleLike(message.id)}>
+
+                  <button
+                    onClick={() => handleLike(message.id)}
+                    className="p-1"
+                  >
                     {message.likes.includes(user.uid) ? "❤️" : "🤍"}
                   </button>
                   {message.likes.length !== 0 && message.likes.length}
@@ -197,7 +231,7 @@ export default function Feed() {
           </div>
         </section>
       </div>
-      <footer className="bg-gray-800 text-white p-5 h-30 w-full">
+      <footer className="bg-gray-800 text-white p-2 h-30 w-full">
         <>site de qualité</>
       </footer>
     </main>
