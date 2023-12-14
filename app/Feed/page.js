@@ -1,5 +1,4 @@
-"use client";
-
+'use client';
 import { useContext, useState, useEffect } from "react";
 import FirebaseContext from "../hooks/context";
 import {
@@ -27,6 +26,7 @@ export default function Feed() {
   const [formValue, setFormValue] = useState("");
   const [messages, setMessages] = useState([]);
   const [activeTab, setActiveTab] = useState("feed");
+  const [messageLimit, setMessageLimit] = useState(10)
 
   useEffect(() => {
     const messagesRef = collection(db, "touits");
@@ -36,15 +36,13 @@ export default function Feed() {
       messagesRef,
       where("userId", "==", user.uid),
       orderBy("createdAt", "desc"),
-      limit(10)
+      limit(messageLimit)
     )} else {
       messageQuery = query(
       messagesRef,
       orderBy("createdAt", "desc"),
-      limit(10)
+      limit(messageLimit)
     )}
-
-    console.log("what i need" + user.uid);
 
     const unsubscribe = onSnapshot(messageQuery, (querySnapshot) => {
       //écouter les modifications dans la collection "users" et mettre à jour le state "messages" en temps réel.
@@ -61,7 +59,7 @@ export default function Feed() {
     return () => {
       unsubscribe();
     };
-  }, [activeTab]);
+  }, [activeTab, messageLimit]);
 
   const sendMessage = async () => {
     try {
@@ -129,15 +127,34 @@ export default function Feed() {
     deleteDoc(doc(collection(db, "touits"), messageId));
   };
 
+  const handleScroll = (e) => {
+    const element = e.target;
+    if(element.scrollHeight - element.scrollTop === element.clientHeight) {
+      setMessageLimit((prevLimit) => prevLimit + 10);
+    }
+    // const test = {
+    //   apiKey: process.env.FIREBASE_API_KEY,
+    //   authDomain: process.env.FIREBASE_AUTH_DOMAIN,
+    //   projectId: process.env.FIREBASE_PROJECT_ID,
+    //   storageBucket: process.env.FIREBASE_STORAGE_BUCKET,
+    //   messagingSenderId: process.env.FIREBASE_MESSAGING_SENDER_ID,
+    //   appId: process.env.FIREBASE_APP_ID,
+    //   a: "a"
+    //   }
+      console.log("test variable environnementale " + process.env.TEST)
+  }
+
   return (
     <main className="flex flex-col h-screen items-center">
-      <header className="text-center p-5 h-30">
-        <h1>{activeTab}</h1>
+      <header className="text-center p-4 h-30 bg-white w-full">
+        <h1 className="italic text-blue-600 font-black position: absolute text-2xl font-['Comic_Sans_Ms']">Touiteur</h1>
+        <h2 className="text-2xl">{activeTab}</h2>
       </header>
       <div className="flex-grow flex flex-row">
         <aside className="w-50 p-5 text-center">
           <img src={user.photoURL} alt={user.displayName} />
           <h2 className="max-w-[110px] break-words">{user.displayName}</h2>
+          <br />
           <button
             onClick={auth.logout}
             className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
@@ -148,16 +165,27 @@ export default function Feed() {
           <br />
           <br />
           <br />
+          <button
+            onClick={() => {
+              setActiveTab("feed")
+              setMessageLimit(10)
+            }}
+            className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded">
+            Feed
+          </button>
           <br />
-          <button onClick={() => setActiveTab("feed")} className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded">Feed</button>
           <br />
-          <br />
-          <button onClick={() => setActiveTab("mesTouites")} className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded">
+          <button
+            onClick={() =>{
+              setActiveTab("mesTouites")
+              setMessageLimit(10)
+              }}
+            className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded">
             Mes touites
           </button>
         </aside>
         <section>
-          <div id="touiteur" className="p-7">
+          <div id="touiteur" className="p-6">
             <form>
               <textarea
                 id="nom_unique"
@@ -175,7 +203,7 @@ export default function Feed() {
                   }
                 }}
                 placeholder="Texte du touite ici (Maximum 280 caractères)"
-                className="w-[400px] resize-y"
+                className="w-[400px] resize-y p-2"
               />
               <button
                 type="button"
@@ -187,7 +215,7 @@ export default function Feed() {
             </form>
           </div>
           <div>
-            <ul className="overflow-y-auto max-h-[calc(100vh-223px)] w-[500px]">
+            <ul className="overflow-y-auto max-h-[calc(100vh-230px)] w-[530px]" onScroll={handleScroll}>
               {messages.map((message) => (
                 <li
                   key={message.id}
@@ -207,7 +235,7 @@ export default function Feed() {
                       />
                       {message.displayName}
                       {" - "}
-                      {message.createdAt.toDate().toString().substring(0, 15)}
+                      {message.createdAt ? message.createdAt.toDate().toString().substring(0, 15) : ''}
                     </div>
                     {message.userId === user.uid && (
                       <button onClick={() => handleSuppr(message.id)}>
