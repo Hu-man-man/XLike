@@ -142,8 +142,8 @@ export default function Feed() {
       </header>
       <div className="flex-grow flex flex-row">
         <aside className="w-50 p-5 text-center">
-          <img src={user?.photoURL} alt={user?.displayName} />
-          <h2 className="max-w-[110px] break-words">{user?.displayName}</h2>
+          <img src={user?.photoURL ?? ""} alt={user?.displayName ?? ""} />
+          <h2 className="max-w-[110px] break-words">{user?.displayName ?? ""}</h2>
           <br />
           <button
             onClick={auth.logout}
