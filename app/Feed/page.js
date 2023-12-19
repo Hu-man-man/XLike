@@ -23,11 +23,6 @@ export default function Feed() {
     firebase: { auth, db },
   } = useContext(FirebaseContext);
 
-  if (!user) {
-    // Afficher un message ou rediriger vers une page de connexion si l'utilisateur n'est pas connecté
-    return <div>Connectez-vous pour accéder à cette page.</div>;
-  }
-
   const [formValue, setFormValue] = useState("");
   const [messages, setMessages] = useState([]);
   const [activeTab, setActiveTab] = useState("feed");
@@ -147,8 +142,8 @@ export default function Feed() {
       </header>
       <div className="flex-grow flex flex-row">
         <aside className="w-50 p-5 text-center">
-          <img src={user.photoURL} alt={user.displayName} />
-          <h2 className="max-w-[110px] break-words">{user.displayName}</h2>
+          <img src={user?.photoURL} alt={user?.displayName} />
+          <h2 className="max-w-[110px] break-words">{user?.displayName}</h2>
           <br />
           <button
             onClick={auth.logout}
