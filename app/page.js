@@ -2,8 +2,6 @@
 
 import useFirebase from "./hooks/useFirebase"
 import  FirebaseContext  from "./hooks/context"
-//import { firebaseConfig } from "./firebaseConfig"
-
 import Login from "./Login/page"
 import Feed from "./Feed/page"
 
