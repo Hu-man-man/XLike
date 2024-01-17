@@ -18,20 +18,24 @@ import {
 } from "firebase/firestore";
 
 export default function Feed() {
-  // const {
-  //   user,
-  //   firebase: { auth, db },
-  // } = useContext(FirebaseContext);
+  const {
+    user,
+    firebase: { auth, db },
+  } = useContext(FirebaseContext);
 
-  const firebaseContext = useContext(FirebaseContext);
-  const user = firebaseContext.user;
-  const auth = firebaseContext.firebase.auth;
-  const db = firebaseContext.firebase.db;
+  // const firebaseContext = useContext(FirebaseContext);
+  // const user = firebaseContext.user;
+  // const auth = firebaseContext.firebase.auth;
+  // const db = firebaseContext.firebase.db;
 
   const [formValue, setFormValue] = useState("");
   const [messages, setMessages] = useState([]);
   const [activeTab, setActiveTab] = useState("feed");
   const [messageLimit, setMessageLimit] = useState(10);
+
+  if (!firebaseContext || !firebaseContext.user) {
+    return null;
+  }
 
   useEffect(() => {
     const messagesRef = collection(db, "touits");
