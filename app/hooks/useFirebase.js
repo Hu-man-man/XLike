@@ -9,7 +9,7 @@ import { initializeApp } from "firebase/app";
 export default function useFirebase(config) {
   const GoogleProvider = new GoogleAuthProvider();
   const [auth, setAuth] = useState(null);
-  const [user, setUser] = useState(""); //données user données par firebase
+  const [user, setUser] = useState(null); //données user données par firebase
   const [db, setDb] = useState(null);   
 
   useEffect(() => {
