@@ -23,7 +23,7 @@ export default function Feed() {
     firebase: { auth, db },
   } = useContext(FirebaseContext);
 
-  user = null ? auth.logout : "";
+  user === null ? auth.logout : "";
 
   const [formValue, setFormValue] = useState("");
   const [messages, setMessages] = useState([]);
