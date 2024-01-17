@@ -1,4 +1,4 @@
-"use client";
+'use client';
 import { useContext, useState, useEffect } from "react";
 import FirebaseContext from "../hooks/context";
 import {
@@ -23,37 +23,26 @@ export default function Feed() {
     firebase: { auth, db },
   } = useContext(FirebaseContext);
 
-  // const firebaseContext = useContext(FirebaseContext);
-  // const user = firebaseContext.user;
-  // const auth = firebaseContext.firebase.auth;
-  // const db = firebaseContext.firebase.db;
-
   const [formValue, setFormValue] = useState("");
   const [messages, setMessages] = useState([]);
   const [activeTab, setActiveTab] = useState("feed");
-  const [messageLimit, setMessageLimit] = useState(10);
-
-  if (!firebaseContext || !firebaseContext.user) {
-    return null;
-  }
+  const [messageLimit, setMessageLimit] = useState(10)
 
   useEffect(() => {
     const messagesRef = collection(db, "touits");
-    let messageQuery;
+    let messageQuery
     if (activeTab === "mesTouites") {
       messageQuery = query(
-        messagesRef,
-        where("userId", "==", user.uid),
-        orderBy("createdAt", "desc"),
-        limit(messageLimit)
-      );
-    } else {
+      messagesRef,
+      where("userId", "==", user.uid),
+      orderBy("createdAt", "desc"),
+      limit(messageLimit)
+    )} else {
       messageQuery = query(
-        messagesRef,
-        orderBy("createdAt", "desc"),
-        limit(messageLimit)
-      );
-    }
+      messagesRef,
+      orderBy("createdAt", "desc"),
+      limit(messageLimit)
+    )}
 
     const unsubscribe = onSnapshot(messageQuery, (querySnapshot) => {
       //écouter les modifications dans la collection "users" et mettre à jour le state "messages" en temps réel.
@@ -62,6 +51,8 @@ export default function Feed() {
         // Parcours de chaque document dans le querySnapshot
         messagesData.push({ id: doc.id, ...doc.data() }); // Pour chaque document, crée un objet contenant l'ID et les données du document
       });
+      console.log("userId in the message:", messagesData[0].userId);
+      console.log("Messages Data:", messagesData);
       setMessages(messagesData);
     });
 
@@ -80,6 +71,7 @@ export default function Feed() {
         photo: user.photoURL,
         likes: [],
       });
+      console.log("Document written with ID: ", docRef.id);
     } catch (e) {
       console.error("Error adding document: ", e);
     }
@@ -121,6 +113,8 @@ export default function Feed() {
       // Mettez à jour l'état avec le nouveau tableau de messages
       setMessages(updatedMessages);
     }
+
+    console.log(updatedMessages[messageIndex]);
   };
 
   const handleSuppr = (messageId) => {
@@ -129,30 +123,27 @@ export default function Feed() {
       (element) => element.id !== messageId
     );
     setMessages(updatedMessagesFiltered);
+    console.log(updatedMessagesFiltered);
     deleteDoc(doc(collection(db, "touits"), messageId));
   };
 
   const handleScroll = (e) => {
     const element = e.target;
-    if (element.scrollHeight - element.scrollTop === element.clientHeight) {
+    if(element.scrollHeight - element.scrollTop === element.clientHeight) {
       setMessageLimit((prevLimit) => prevLimit + 10);
     }
-  };
+  }
 
-  return user ? (
+  return (
     <main className="flex flex-col h-screen items-center">
       <header className="text-center p-4 h-30 bg-white w-full">
-        <h1 className="italic text-blue-600 font-black position: absolute text-2xl font-['Comic_Sans_Ms']">
-          Touiteur
-        </h1>
+        <h1 className="italic text-blue-600 font-black position: absolute text-2xl font-['Comic_Sans_Ms']">Touiteur</h1>
         <h2 className="text-2xl">{activeTab}</h2>
       </header>
       <div className="flex-grow flex flex-row">
         <aside className="w-50 p-5 text-center">
           <img src={user?.photoURL ?? ""} alt={user?.displayName ?? ""} />
-          <h2 className="max-w-[110px] break-words">
-            {user?.displayName ?? ""}
-          </h2>
+          <h2 className="max-w-[110px] break-words">{user?.displayName ?? ""}</h2>
           <br />
           <button
             onClick={auth.logout}
@@ -166,22 +157,20 @@ export default function Feed() {
           <br />
           <button
             onClick={() => {
-              setActiveTab("feed");
-              setMessageLimit(10);
+              setActiveTab("feed")
+              setMessageLimit(10)
             }}
-            className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded"
-          >
+            className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded">
             Feed
           </button>
           <br />
           <br />
           <button
-            onClick={() => {
-              setActiveTab("mesTouites");
-              setMessageLimit(10);
-            }}
-            className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded"
-          >
+            onClick={() =>{
+              setActiveTab("mesTouites")
+              setMessageLimit(10)
+              }}
+            className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded">
             Mes touites
           </button>
         </aside>
@@ -216,10 +205,7 @@ export default function Feed() {
             </form>
           </div>
           <div>
-            <ul
-              className="overflow-y-auto max-h-[calc(100vh-230px)] w-[530px]"
-              onScroll={handleScroll}
-            >
+            <ul className="overflow-y-auto max-h-[calc(100vh-230px)] w-[530px]" onScroll={handleScroll}>
               {messages.map((message) => (
                 <li
                   key={message.id}
@@ -239,9 +225,7 @@ export default function Feed() {
                       />
                       {message.displayName}
                       {" - "}
-                      {message.createdAt
-                        ? message.createdAt.toDate().toString().substring(0, 15)
-                        : ""}
+                      {message.createdAt ? message.createdAt.toDate().toString().substring(0, 15) : ''}
                     </div>
                     {message.userId === user.uid && (
                       <button onClick={() => handleSuppr(message.id)}>
@@ -269,5 +253,5 @@ export default function Feed() {
         <>site de qualité</>
       </footer>
     </main>
-  ) : null;
+  );
 }
