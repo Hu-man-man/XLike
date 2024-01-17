@@ -51,8 +51,6 @@ export default function Feed() {
         // Parcours de chaque document dans le querySnapshot
         messagesData.push({ id: doc.id, ...doc.data() }); // Pour chaque document, crée un objet contenant l'ID et les données du document
       });
-      console.log("userId in the message:", messagesData[0].userId);
-      console.log("Messages Data:", messagesData);
       setMessages(messagesData);
     });
 
@@ -71,7 +69,6 @@ export default function Feed() {
         photo: user.photoURL,
         likes: [],
       });
-      console.log("Document written with ID: ", docRef.id);
     } catch (e) {
       console.error("Error adding document: ", e);
     }
@@ -113,8 +110,6 @@ export default function Feed() {
       // Mettez à jour l'état avec le nouveau tableau de messages
       setMessages(updatedMessages);
     }
-
-    console.log(updatedMessages[messageIndex]);
   };
 
   const handleSuppr = (messageId) => {
@@ -123,7 +118,6 @@ export default function Feed() {
       (element) => element.id !== messageId
     );
     setMessages(updatedMessagesFiltered);
-    console.log(updatedMessagesFiltered);
     deleteDoc(doc(collection(db, "touits"), messageId));
   };
 

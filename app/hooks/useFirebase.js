@@ -9,7 +9,7 @@ import { initializeApp } from "firebase/app";
 export default function useFirebase(config) {
   const GoogleProvider = new GoogleAuthProvider();
   const [auth, setAuth] = useState(null);
-  const [user, setUser] = useState(null); //données user données par firebase
+  const [user, setUser] = useState(""); //données user données par firebase
   const [db, setDb] = useState(null);   
 
   useEffect(() => {
@@ -19,7 +19,6 @@ export default function useFirebase(config) {
 
     if (auth) {
         const unsubscribe = auth.onAuthStateChanged(authUser => { //écoute 
-            console.log(authUser)
             if (authUser) {
                 setUser(authUser)
             } else {setUser(null)};
