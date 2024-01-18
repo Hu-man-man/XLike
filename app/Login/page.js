@@ -4,6 +4,10 @@ import  FirebaseContext  from "../hooks/context"
 
 export default function login() {
     const { firebase : { auth } } = useContext(FirebaseContext);
+    if (!firebase) {
+      return <div>Chargement...</div>;
+    }
+    
     return (
       <main>
         <div className="flex items-center justify-center flex-col h-screen">
