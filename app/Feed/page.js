@@ -31,6 +31,7 @@ export default function Feed() {
   useEffect(() => {
     const messagesRef = collection(db, "touits");
     let messageQuery
+    if (user === null) {return ('')}
     if (activeTab === "mesTouites") {
       messageQuery = query(
       messagesRef,
