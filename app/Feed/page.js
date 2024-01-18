@@ -23,10 +23,6 @@ export default function Feed() {
     firebase: { auth, db },
   } = useContext(FirebaseContext);
 
-  if (!user) {
-    return <div>Chargement...</div>;
-  }
-
   const [formValue, setFormValue] = useState("");
   const [messages, setMessages] = useState([]);
   const [activeTab, setActiveTab] = useState("feed");
