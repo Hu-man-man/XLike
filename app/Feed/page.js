@@ -23,6 +23,10 @@ export default function Feed() {
     firebase: { auth, db },
   } = useContext(FirebaseContext);
 
+  if (!user) {
+    return <div>Chargement...</div>;
+  }
+
   const [formValue, setFormValue] = useState("");
   const [messages, setMessages] = useState([]);
   const [activeTab, setActiveTab] = useState("feed");
@@ -31,7 +35,6 @@ export default function Feed() {
   useEffect(() => {
     const messagesRef = collection(db, "touits");
     let messageQuery
-    if (user === null) {return ('')}
     if (activeTab === "mesTouites") {
       messageQuery = query(
       messagesRef,
