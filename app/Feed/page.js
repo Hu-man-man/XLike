@@ -20,8 +20,10 @@ import {
 export default function Feed() {
   const {
     user,
-    firebase: { auth, db },
+    firebase,
   } = useContext(FirebaseContext) || {};
+
+  const { auth, db } = firebase || {};
 
   const [formValue, setFormValue] = useState("");
   const [messages, setMessages] = useState([]);
