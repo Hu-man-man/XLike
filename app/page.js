@@ -23,3 +23,5 @@ export default function Home() {
     </FirebaseContext.Provider>
     )
 }
+
+Home.js
