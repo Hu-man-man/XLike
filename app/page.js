@@ -15,7 +15,7 @@ export default function Home() {
     appId: process.env.NEXT_PUBLIC_APP_ID
   }
 
-  const {user, firebase} = useFirebase(firebaseConfig);  //hook qui gère la connection
+  const {user, firebase} = useFirebase(firebaseConfig) || {};  //hook qui gère la connection
 
   return  (
     <FirebaseContext.Provider value={{ user, firebase }}> {/* contexte pour partager la connection avec tous les composants de l'app */}
