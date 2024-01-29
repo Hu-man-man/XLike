@@ -6,13 +6,21 @@ export default function Login() {
     const { firebase} = useContext(FirebaseContext) || {};
     const { auth } = firebase || {};
 
+    const handleLogin = () => {
+      if (auth && auth.login) {
+          auth.login();
+      } else {
+          console.error("Authentification non disponible");
+      }
+  };
+
     return (
       <main>
         <div className="flex items-center justify-center flex-col h-screen">
           <h1 className="italic text-blue-600 font-black text-2xl font-['Comic_Sans_Ms']">Touiteur</h1>
           <br />
           <button
-            onClick={auth.login}
+            onClick={handleLogin}
             className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
           >
             Log In
