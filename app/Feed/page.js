@@ -27,6 +27,7 @@ export default function Feed() {
   const [messages, setMessages] = useState([]);
   const [activeTab, setActiveTab] = useState("feed");
   const [messageLimit, setMessageLimit] = useState(10)
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const messagesRef = collection(db, "touits");
@@ -51,9 +52,8 @@ export default function Feed() {
         // Parcours de chaque document dans le querySnapshot
         messagesData.push({ id: doc.id, ...doc.data() }); // Pour chaque document, crée un objet contenant l'ID et les données du document
       });
-      console.log("userId in the message:", messagesData[0].userId);
-      console.log("Messages Data:", messagesData);
       setMessages(messagesData);
+      setLoading(false);
     });
 
     return () => {
@@ -132,6 +132,10 @@ export default function Feed() {
     if(element.scrollHeight - element.scrollTop === element.clientHeight) {
       setMessageLimit((prevLimit) => prevLimit + 10);
     }
+  }
+
+  if (loading) {
+    return <div>Loading...</div>;
   }
 
   return (
