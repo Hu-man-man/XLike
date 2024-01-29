@@ -2,7 +2,7 @@
 import { useContext } from "react";
 import  FirebaseContext  from "../hooks/context"
 
-export default function login() {
+export default function Login() {
     const { firebase} = useContext(FirebaseContext) || {};
     const { auth } = firebase || {};
 
