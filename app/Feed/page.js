@@ -23,6 +23,10 @@ export default function Feed() {
     firebase,
   } = useContext(FirebaseContext) || {};
 
+  if (!firebase) {
+    return <div>Loading...</div>;
+  }
+
   const { auth, db } = firebase || {};
 
   const [formValue, setFormValue] = useState("");
