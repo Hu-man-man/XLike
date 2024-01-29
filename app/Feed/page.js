@@ -21,7 +21,7 @@ export default function Feed() {
   const {
     user,
     firebase: { auth, db },
-  } = useContext(FirebaseContext);
+  } = useContext(FirebaseContext) || {};
 
   const [formValue, setFormValue] = useState("");
   const [messages, setMessages] = useState([]);
