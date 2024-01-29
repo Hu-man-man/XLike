@@ -55,7 +55,7 @@ export default function Feed() {
       setMessages(messagesData);
     });
 
-    setLoading(false);
+    if (user && auth && db ) setLoading(false);
 
     return () => {
       unsubscribe();

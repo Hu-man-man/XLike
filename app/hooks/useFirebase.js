@@ -8,9 +8,9 @@ import { initializeApp } from "firebase/app";
 
 export default function useFirebase(config) {
   const GoogleProvider = new GoogleAuthProvider();
-  const [auth, setAuth] = useState({});
-  const [user, setUser] = useState({}); //données user données par firebase
-  const [db, setDb] = useState({});   
+  const [auth, setAuth] = useState(null);
+  const [user, setUser] = useState(null); //données user données par firebase
+  const [db, setDb] = useState(null);   
 
   useEffect(() => {
     const app = initializeApp(config);
@@ -21,7 +21,7 @@ export default function useFirebase(config) {
         const unsubscribe = auth.onAuthStateChanged(authUser => { //écoute 
             if (authUser) {
                 setUser(authUser)
-            } else {setUser({})};
+            } else {setUser(null)};
         }  
         );
         return () => unsubscribe();
