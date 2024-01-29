@@ -49,6 +49,7 @@
 //     </main>
 //   );
 // }
+"use client";
 
 import { useContext, useState } from "react";
 import FirebaseContext from "../hooks/context";
