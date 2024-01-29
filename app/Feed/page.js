@@ -54,7 +54,7 @@ export default function Feed() {
       });
       setMessages(messagesData);
     });
-    
+
     setLoading(false);
 
     return () => {
