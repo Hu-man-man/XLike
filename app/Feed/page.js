@@ -53,8 +53,9 @@ export default function Feed() {
         messagesData.push({ id: doc.id, ...doc.data() }); // Pour chaque document, crée un objet contenant l'ID et les données du document
       });
       setMessages(messagesData);
-      setLoading(false);
     });
+    
+    setLoading(false);
 
     return () => {
       unsubscribe();
