@@ -1,4 +1,4 @@
-'use client';
+"use client";
 import { useContext, useState, useEffect } from "react";
 import FirebaseContext from "../hooks/context";
 import {
@@ -18,34 +18,33 @@ import {
 } from "firebase/firestore";
 
 export default function Feed() {
-  const {
-    user,
-    firebase,
-  } = useContext(FirebaseContext) || {};
+  const { user, firebase } = useContext(FirebaseContext) || {};
 
   const { auth, db } = firebase || {};
 
   const [formValue, setFormValue] = useState("");
   const [messages, setMessages] = useState([]);
   const [activeTab, setActiveTab] = useState("feed");
-  const [messageLimit, setMessageLimit] = useState(10)
+  const [messageLimit, setMessageLimit] = useState(10);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const messagesRef = collection(db, "touits");
-    let messageQuery
+    let messageQuery;
     if (activeTab === "mesTouites") {
       messageQuery = query(
-      messagesRef,
-      where("userId", "==", user.uid),
-      orderBy("createdAt", "desc"),
-      limit(messageLimit)
-    )} else {
+        messagesRef,
+        where("userId", "==", user.uid),
+        orderBy("createdAt", "desc"),
+        limit(messageLimit)
+      );
+    } else {
       messageQuery = query(
-      messagesRef,
-      orderBy("createdAt", "desc"),
-      limit(messageLimit)
-    )}
+        messagesRef,
+        orderBy("createdAt", "desc"),
+        limit(messageLimit)
+      );
+    }
 
     const unsubscribe = onSnapshot(messageQuery, (querySnapshot) => {
       //écouter les modifications dans la collection "users" et mettre à jour le state "messages" en temps réel.
@@ -132,10 +131,10 @@ export default function Feed() {
 
   const handleScroll = (e) => {
     const element = e.target;
-    if(element.scrollHeight - element.scrollTop === element.clientHeight) {
+    if (element.scrollHeight - element.scrollTop === element.clientHeight) {
       setMessageLimit((prevLimit) => prevLimit + 10);
     }
-  }
+  };
 
   if (loading) {
     return <div>Loading...</div>;
@@ -143,47 +142,52 @@ export default function Feed() {
 
   return (
     <main className="flex flex-col h-screen items-center">
-      <header className="text-center p-4 h-30 bg-white w-full">
-        <h1 className="italic text-blue-600 font-black position: absolute text-2xl font-['Comic_Sans_Ms']">Touiteur</h1>
-        <h2 className="text-2xl">{activeTab}</h2>
+      <header className="text-center p-1 md:p-4 md:h-30 bg-white w-full md:text-2xl">
+        <h1 className="italic text-blue-600 font-black position: absolute font-['Comic_Sans_Ms']">
+          Touiteur
+        </h1>
+        <h2>{activeTab}</h2>
       </header>
-      <div className="flex-grow flex flex-row">
-        <aside className="w-50 p-5 text-center">
-          <img src={user?.photoURL ?? ""} alt={user?.displayName ?? ""} />
-          <h2 className="max-w-[110px] break-words">{user?.displayName ?? ""}</h2>
-          <br />
-          <button
-            onClick={auth.logout}
-            className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-          >
-            Log out
-          </button>
-          <br />
-          <br />
-          <br />
-          <br />
-          <button
-            onClick={() => {
-              setActiveTab("feed")
-              setMessageLimit(10)
-            }}
-            className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded">
-            Feed
-          </button>
-          <br />
-          <br />
-          <button
-            onClick={() =>{
-              setActiveTab("mesTouites")
-              setMessageLimit(10)
+      <div className="flex-grow flex flex-col md:flex-row">
+        <aside className="pt-2 md:p-5 text-center flex flex-row md:flex-col">
+          <div className="flex md:flex-col w-full md:h-full justify-center items-center gap-2">
+            <div className='flex flex-col'>
+              <img src={user?.photoURL ?? ""} alt={user?.displayName ?? ""} className='h-14 md:h-24 object-contain' />
+              <h2 className="max-w-[110px] break-words">
+              {user?.displayName ? user.displayName.split('(')[0].trim() : ""}
+              </h2>
+            </div>
+            <button
+              onClick={auth.logout}
+              className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-2 md:px-4 rounded h-min"
+            >
+              Log out
+            </button>
+          </div>
+          <div className="flex md:flex-col w-full md:h-full justify-center items-center gap-2">
+            <button
+              onClick={() => {
+                setActiveTab("feed");
+                setMessageLimit(10);
               }}
-            className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded">
-            Mes touites
-          </button>
+              className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-2 md:px-4 rounded"
+            >
+              Feed
+            </button>
+            <button
+              onClick={() => {
+                setActiveTab("mesTouites");
+                setMessageLimit(10);
+              }}
+              className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-2 md:px-4 rounded"
+            >
+              Mes touites
+            </button>
+          </div>
         </aside>
         <section>
-          <div id="touiteur" className="p-6">
-            <form>
+          <div id="touiteur" className="p-2 md:p-6">
+            <form className='flex items-end'>
               <textarea
                 id="nom_unique"
                 name="nom_unique"
@@ -199,8 +203,8 @@ export default function Feed() {
                     sendMessage();
                   }
                 }}
-                placeholder="Texte du touite ici (Maximum 280 caractères)"
-                className="w-[400px] resize-y p-2"
+                placeholder="Texte du touite ici (Max 280 caractères)"
+                className="w-full md:w-[400px] resize-y p-2"
               />
               <button
                 type="button"
@@ -212,7 +216,10 @@ export default function Feed() {
             </form>
           </div>
           <div>
-            <ul className="overflow-y-auto max-h-[calc(100vh-230px)] w-[530px]" onScroll={handleScroll}>
+            <ul
+              className="overflow-y-auto max-h-[calc(100vh-230px)] md:w-[530px]"
+              onScroll={handleScroll}
+            >
               {messages.map((message) => (
                 <li
                   key={message.id}
@@ -232,7 +239,9 @@ export default function Feed() {
                       />
                       {message.displayName}
                       {" - "}
-                      {message.createdAt ? message.createdAt.toDate().toString().substring(0, 15) : ''}
+                      {message.createdAt
+                        ? message.createdAt.toDate().toString().substring(0, 15)
+                        : ""}
                     </div>
                     {message.userId === user.uid && (
                       <button onClick={() => handleSuppr(message.id)}>
@@ -256,8 +265,8 @@ export default function Feed() {
           </div>
         </section>
       </div>
-      <footer className="bg-gray-800 text-white p-2 h-30 w-full">
-        <>site de qualité</>
+      <footer className="bg-gray-800 text-white p-2 h-30 w-full text-center md:text-left">
+        <>Esthétique de qualité relative</>
       </footer>
     </main>
   );
